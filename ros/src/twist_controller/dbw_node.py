@@ -50,6 +50,9 @@ class DBWNode(object):
         max_lat_accel = rospy.get_param('~max_lat_accel', 3.)
         max_steer_angle = rospy.get_param('~max_steer_angle', 8.)
 
+        max_throttle = rospy.get_param('~max_throttle', 1.0)
+        max_brake = rospy.get_param('~max_brake', 1.0)
+
         self.steer_pub = rospy.Publisher('/vehicle/steering_cmd',
                                          SteeringCmd, queue_size=1)
         self.throttle_pub = rospy.Publisher('/vehicle/throttle_cmd',
@@ -62,7 +65,7 @@ class DBWNode(object):
 
         min_speed = 0.1
         yaw_controller = YawController(wheel_base, steer_ratio, min_speed, max_lat_accel, max_steer_angle)
-        self.controller = Controller(yaw_controller, accel_limit, decel_limit)
+        self.controller = Controller(yaw_controller, accel_limit, decel_limit, max_throttle, max_brake)
 
         # TODO: Subscribe to all the topics you need to
         rospy.Subscriber('/current_velocity', TwistStamped, self.current_twist_cb)

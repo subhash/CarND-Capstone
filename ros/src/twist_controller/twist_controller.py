@@ -9,10 +9,12 @@ ONE_MPH = 0.44704
 
 
 class Controller(object):
-    def __init__(self, yaw_controller, accel_limit, decel_limit):
+    def __init__(self, yaw_controller, accel_limit, decel_limit, max_throttle, max_brake):
         self.yaw_controller = yaw_controller
         self.accel_limit = accel_limit
         self.decel_limit = decel_limit
+        self.max_throttle = max_throttle
+        self.max_brake = max_brake
         # self.pid = PID(5, 0.5, 0.5)
         self.pid = PID(2.5, 0.0005, 0.1, -1.0, 1.0)
         self.errs = []
@@ -74,4 +76,4 @@ class Controller(object):
 
         steer = self.yaw_controller.get_steering(proposed_linear, proposed_angular, current_linear)
         #steer = self.yaw_controller.steer_ratio * proposed_angular
-        return throttle, brake, steer
+        return throttle * self.max_throttle, brake * self.max_brake, steer
